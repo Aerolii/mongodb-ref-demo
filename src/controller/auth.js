@@ -6,7 +6,6 @@ const { Router } = require('express')
 const bcrypt = require('bcrypt')
 const Joi = require('joi')
 const { User } = require('../models/users')
-const { generateToken } = require('./../lib/token')
 
 const router = Router()
 
@@ -21,15 +20,14 @@ router.post('/', async (req, res) => {
 
   try {
     // 校验用户是否存在
-    let user = await User.findOne({ email: email })
+    const user = await User.findOne({ email: email })
     if (!user) return res.status(400).send('Invalid email or password!')
     const validPassword = await bcrypt.compare(password, user.password)
 
     if (!validPassword)
       return res.status(400).send('Invalid email or password!')
     // const token = jwt.sign({ id: user._id }, process.env.EXPRESS_APP_JWT_KEY)
-    const token = generateToken(user._id)
-    res.send(token)
+    res.send(user.generateAuthToken())
   } catch (error) {
     res.status(500).json({ message: JSON.stringify(error.message) })
   }

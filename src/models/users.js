@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const { default: mongoose, Schema, model } = require('mongoose')
 const { randomUUID } = require('node:crypto')
+const jwt = require('jsonwebtoken')
 
 // const userSchema = new Schema(
 //   {
@@ -75,6 +76,20 @@ const userSchema = new Schema(
   },
   { toJSON: { getters: true } }
 )
+
+// userSchema.method('generateAuthToken', function () {
+//   return jwt.sign({ id: this._id }, process.env.EXPRESS_APP_JWT_KEY)
+// })
+userSchema.methods = {
+  generateAuthToken: function () {
+    return jwt.sign({ id: this._id }, process.env.EXPRESS_APP_JWT_KEY)
+  }
+}
+
+// // 添加自定义方法
+// userSchema.methods.generateAuthToken = function () {
+//   return jwt.sign({ id: this._id }, process.env.EXPRESS_APP_JWT_KEY)
+// }
 
 const User = model('User', userSchema)
 
