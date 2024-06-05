@@ -2,19 +2,32 @@ const { Router } = require('express')
 const bcrypt = require('bcrypt')
 const pick = require('lodash.pick')
 const { validateUser, User } = require('../models/users')
+const auth = require('./../middlewares/auth')
 
 const router = Router()
 
-router.get('/', async (req, res) => {
+/**
+ * 获取用户详细信息
+ * 这个接口是为了 防止 get('/:id') 的形式，泄漏用户 id
+ *
+ */
+router.get('/me', auth, async (req, res) => {
   try {
-    const users = await User.find()
-    res.json(users.map((user) => pick(user, ['name', 'email', 'id'])))
-    // res.json({
-    //   data: users.map((user) => user.toJSON())
-    // })
+    const user = await User.findById(req.user.id).select('-_id -id -password')
+    if (!user) return res.status(400).send('User does not exist.')
+    res.send(user)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(400).send(error.message)
   }
+  // try {
+  //   const users = await User.find()
+  //   res.json(users.map((user) => pick(user, ['name', 'email', 'id'])))
+  //   // res.json({
+  //   //   data: users.map((user) => user.toJSON())
+  //   // })
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message })
+  // }
 })
 
 router.post('/', async (req, res) => {

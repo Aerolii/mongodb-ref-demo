@@ -3,6 +3,8 @@ const { validate, Customer } = require('../models/customer')
 
 const router = Router()
 
+// 授权
+// 这里应该是授权用户是否能够做某件事
 router.get('/', (req, res) => {
   res.send('get all customers')
 })

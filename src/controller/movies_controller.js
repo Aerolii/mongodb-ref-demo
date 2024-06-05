@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const { validate, Movie } = require('../models/movie')
 const { Genre } = require('../models/genre')
+const auth = require('../middlewares/auth')
 
 const router = Router()
 
@@ -13,7 +14,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { error } = validate(req.body)
 
   if (error) {
@@ -46,7 +47,7 @@ router.get('/:id', (req, res) => {
 })
 
 // update
-router.put('/:id', (req, res) => {
+router.put('/:id', auth, (req, res) => {
   res.send(`update movie with ID ${req.params.id}`)
 })
 

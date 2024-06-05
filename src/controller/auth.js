@@ -9,6 +9,7 @@ const { User } = require('../models/users')
 
 const router = Router()
 
+// 认证
 router.post('/', async (req, res) => {
   const { error, value } = validate(req.body)
 

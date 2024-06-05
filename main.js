@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
 const readEnv = require('./src/config')
+const authMiddleware = require('./src/middlewares/auth')
 
 const {
   movies,
@@ -44,10 +45,21 @@ function useMiddleware() {
   app.use(morgan('dev'))
   app.use(express.json())
   app.use(express.urlencoded())
+
+  // /**
+  //  * 自定义 Authentication 用户认证中间件
+  //  */
+  // app.use(function (req, res, next) {
+  //   const token = req.header('x-auth-token')
+  //   console.log(req.method)
+  //   console.log('req.path :>> ', req.path)
+  //   if (!token) return res.status(401).send('Access denied. No token provied.')
+  // })
+
   app.use('/api/movies', movies)
   app.use('/api/genres', genres)
-  app.use('/api/customers', customers)
-  app.use('/api/rentals', rentals)
+  app.use('/api/customers', authMiddleware, customers)
+  app.use('/api/rentals', authMiddleware, rentals)
   // 两种方式设置路由
   // // 注册
   // app.post('/api/users', (req, res) => {

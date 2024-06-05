@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const { Genre } = require('../models/genre')
+const auth = require('./../middlewares/auth')
 
 const router = Router()
 
@@ -8,7 +9,7 @@ router.get('/', async (req, res) => {
   res.send(genres)
 })
 
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
   res.send('create a genre')
 })
 
@@ -17,7 +18,7 @@ router.get('/:id', (req, res) => {
 })
 
 // update
-router.put('/:id', (req, res) => {
+router.put('/:id', auth, (req, res) => {
   res.send(`update genre with ID ${req.params.id}`)
 })
 
