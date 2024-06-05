@@ -72,6 +72,10 @@ const userSchema = new Schema(
       //     pwd.slice(len - 2)
       //   )
       // }
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false
     }
   },
   { toJSON: { getters: true } }
@@ -82,7 +86,10 @@ const userSchema = new Schema(
 // })
 userSchema.methods = {
   generateAuthToken: function () {
-    return jwt.sign({ id: this._id }, process.env.EXPRESS_APP_JWT_KEY)
+    return jwt.sign(
+      { id: this._id, isAdmin: this.isAdmin },
+      process.env.EXPRESS_APP_JWT_KEY
+    )
   }
 }
 
