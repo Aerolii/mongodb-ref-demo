@@ -19,8 +19,13 @@ const app = express()
 readEnv(app.get('env'))
 
 function connectDB() {
+  if (!process.env.EXPRESS_APP_DB) {
+    console.error(
+      'Environment Variables Error: Not found the variable EXPRESS_APP_DB, that connect to DB url.'
+    )
+    process.exit(1)
+  }
   const mongoDB = process.env.EXPRESS_APP_DB
-  console.log('mongoDB :>> ', mongoDB)
   mongoose
     .connect(mongoDB, {
       useNewUrlParser: true,
@@ -31,6 +36,7 @@ function connectDB() {
     })
     .catch((err) => {
       console.log('Could not connect to MongoDB: ', err)
+      process.exit(1)
     })
 }
 
