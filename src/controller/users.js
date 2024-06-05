@@ -1,7 +1,8 @@
 const { Router } = require('express')
 const bcrypt = require('bcrypt')
-const { validateUser, User } = require('../models/users')
 const pick = require('lodash.pick')
+const generateToken = require('./../lib/token')
+const { validateUser, User } = require('../models/users')
 
 const router = Router()
 
@@ -41,7 +42,10 @@ router.post('/', async (req, res) => {
     })
 
     const data = await user.save()
-    res.json(pick(data, ['name', 'email', 'id']))
+    // const token = jwt.sign({ id: data._id }, process.env.EXPRESS_APP_JWT_KEY)
+    const token = generateToken(data._id)
+
+    res.header('x-auth-token', token).json(pick(data, ['name', 'email', 'id']))
   } catch (error) {
     res.status(500).json({ message: JSON.stringify(error.message) })
   }
