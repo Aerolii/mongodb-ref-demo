@@ -1,0 +1,7 @@
+exports.customers = require('./customers_controller')
+exports.genres = require('./genres_controller')
+exports.movies = require('./movies_controller')
+exports.rentals = require('./rentals')
+exports.users = require('./users')
+exports.login = require('./login')
+exports.auth = require('./auth')
