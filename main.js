@@ -39,6 +39,8 @@ function connectDB() {
     })
     .catch((err) => {
       console.log('Could not connect to MongoDB: ', err)
+      // 长时间未连接 mongodb 连接可能释放，从而导致连接失败
+      // 当发生 Promise Reject 时， 如果未进行处理，那么 Node 可能终止当前程序运行的 process
       process.exit(1)
     })
 }
