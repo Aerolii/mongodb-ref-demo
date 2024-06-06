@@ -29,14 +29,17 @@ router.post('/', auth, async (req, res) => {
     const genres = await Promise.all(genresId.map((id) => Genre.findById(id)))
 
     if (!genres.length) return res.status(400).send('Not found genre with ID.')
-    console.log('genres :>> ', genres)
+
     let movie = new Movie({
       title,
       numberInStock,
       dailyRateRental,
       genres: genres.map(({ _id, name }) => ({ _id, name }))
     })
-    movie = await movie.save()
+    // 实际上， ObjectId 是 mongodb driver 生成而不是 mongodb
+    // 所以在连接时，driver 就已经生成了 ObjectId
+    // 不再需要去写入返回数据
+    await movie.save()
     res.send(movie)
   } catch (error) {
     res.status(500).send(error.message)

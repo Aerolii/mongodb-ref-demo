@@ -1,6 +1,7 @@
 const Joi = require('joi')
-const { Schema, model } = require('mongoose')
+const { Schema, model, default: mongoose } = require('mongoose')
 const { genreSchema } = require('./genre')
+const { isObjectId } = require('../lib/utils')
 
 const movieSchema = new Schema({
   title: {
@@ -14,7 +15,7 @@ const movieSchema = new Schema({
     type: [genreSchema],
     required: true,
     validate: {
-      validator: (v) => v.length > 0,
+      validator: (v) => v.length > 0 && isObjectId(v),
       message: 'Genres should not empty array'
     }
   },

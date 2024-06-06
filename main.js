@@ -14,6 +14,7 @@ const {
   login,
   auth
 } = require('./src/controller')
+const isObjectIdMiddleware = require('./src/middlewares/isObjectId')
 
 const app = express()
 

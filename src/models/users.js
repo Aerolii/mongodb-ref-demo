@@ -77,6 +77,9 @@ const userSchema = new Schema(
       type: Boolean,
       default: false
     }
+    // 高级操作
+    // roles: [], // 角色
+    // operations: [] // 可执行操作
   },
   { toJSON: { getters: true } }
 )
@@ -96,7 +99,10 @@ const userSchema = new Schema(
 
 // 添加自定义方法
 userSchema.methods.generateAuthToken = function () {
-  return jwt.sign({ id: this._id }, process.env.EXPRESS_APP_JWT_KEY)
+  return jwt.sign(
+    { id: this._id, isAdmin: this.isAdmin },
+    process.env.EXPRESS_APP_JWT_KEY
+  )
 }
 
 const User = model('User', userSchema)

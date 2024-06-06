@@ -13,8 +13,8 @@ const genreSchema = new Schema({
 const Genre = model('Genre', genreSchema)
 
 function validate(name) {
-  const schema = Joi.object({
-    name: Joi.string().min(2).max(50).required
+  const schema = JoiExtended.object({
+    name: Joi.string().min(2).max(50).required()
   })
 
   return schema.validate({ name })
