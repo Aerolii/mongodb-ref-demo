@@ -84,19 +84,20 @@ const userSchema = new Schema(
 // userSchema.method('generateAuthToken', function () {
 //   return jwt.sign({ id: this._id }, process.env.EXPRESS_APP_JWT_KEY)
 // })
-userSchema.methods = {
-  generateAuthToken: function () {
-    return jwt.sign(
-      { id: this._id, isAdmin: this.isAdmin },
-      process.env.EXPRESS_APP_JWT_KEY
-    )
-  }
-}
-
-// // 添加自定义方法
-// userSchema.methods.generateAuthToken = function () {
-//   return jwt.sign({ id: this._id }, process.env.EXPRESS_APP_JWT_KEY)
+// userSchema.methods = {
+//   generateAuthToken: function () {
+//     const email = this['get']('email', null, { getters: false })
+//     return jwt.sign(
+//       { id: email, isAdmin: this.isAdmin }, // 使用 id 可能存在解密后暴露用户
+//       process.env.EXPRESS_APP_JWT_KEY
+//     )
+//   }
 // }
+
+// 添加自定义方法
+userSchema.methods.generateAuthToken = function () {
+  return jwt.sign({ id: this._id }, process.env.EXPRESS_APP_JWT_KEY)
+}
 
 const User = model('User', userSchema)
 

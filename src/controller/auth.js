@@ -23,6 +23,8 @@ router.post('/', async (req, res) => {
     // 校验用户是否存在
     const user = await User.findOne({ email: email })
     if (!user) return res.status(400).send('Invalid email or password!')
+    // user.toJSON({ getters: false })
+
     const validPassword = await bcrypt.compare(password, user.password)
 
     if (!validPassword)
