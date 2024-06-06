@@ -2,8 +2,13 @@ const { Router } = require('express')
 const { validate, Movie } = require('../models/movie')
 const { Genre } = require('../models/genre')
 const auth = require('../middlewares/auth')
+const admin = require('../middlewares/admin')
+const asyncMiddleware = require('../middlewares/asyncMiddleware')
 
 const router = Router()
+
+router.route('/').post(auth)
+router.route('/:id').put(auth).post(auth).delete([auth, admin])
 
 router.get('/', async (req, res) => {
   try {
@@ -14,7 +19,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', auth, async (req, res) => {
+router.post('/', async (req, res) => {
   const { error } = validate(req.body)
 
   if (error) {
@@ -23,12 +28,10 @@ router.post('/', auth, async (req, res) => {
 
   try {
     const { genresId, title, numberInStock, dailyRateRental } = req.body
-    console.log('genresId :>> ', genresId)
     /**
      * 查找所有匹配的 genres
      */
     const genres = await Promise.all(genresId.map((id) => Genre.findById(id)))
-    console.log('genres :>> ', genres)
 
     if (!genres.length) return res.status(400).send('Not found genre with ID.')
 
@@ -52,8 +55,21 @@ router.get('/:id', (req, res) => {
 })
 
 // update
-router.put('/:id', auth, (req, res) => {
+router.put('/:id', (req, res) => {
   res.send(`update movie with ID ${req.params.id}`)
 })
+
+router.delete(
+  '/:id',
+  asyncMiddleware(async (req, res) => {
+    const movie = await Movie.findByIdAndDelete(req.params.id)
+    console.log('movie :>> ', movie)
+    if (movie) {
+      res.send(movie)
+    } else {
+      throw new Error(`Not founded Movie with movie ID ${req.params.id}`)
+    }
+  })
+)
 
 module.exports = router
