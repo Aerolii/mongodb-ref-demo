@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt')
 const pick = require('lodash.pick')
 const { validateUser, User } = require('../models/users')
 const auth = require('./../middlewares/auth')
+const admin = require('./../middlewares/admin')
+const asyncMiddleware = require('../middlewares/asyncMiddleware')
 
 const router = Router()
 
@@ -62,5 +64,14 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: JSON.stringify(error.message) })
   }
 })
+
+router.get(
+  '/all',
+  [auth, admin],
+  asyncMiddleware(async (req, res) => {
+    const users = await User.find()
+    res.send(users)
+  })
+)
 
 module.exports = router

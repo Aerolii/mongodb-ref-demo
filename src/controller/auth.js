@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
     return res.status(400).send(error.details[0].message)
   }
 
-  const { email, password } = value
+  const { email, password } = req.body
 
   try {
     // 校验用户是否存在
