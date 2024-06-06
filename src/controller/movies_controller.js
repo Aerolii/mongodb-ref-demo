@@ -23,10 +23,12 @@ router.post('/', auth, async (req, res) => {
 
   try {
     const { genresId, title, numberInStock, dailyRateRental } = req.body
+    console.log('genresId :>> ', genresId)
     /**
      * 查找所有匹配的 genres
      */
     const genres = await Promise.all(genresId.map((id) => Genre.findById(id)))
+    console.log('genres :>> ', genres)
 
     if (!genres.length) return res.status(400).send('Not found genre with ID.')
 

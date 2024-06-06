@@ -6,14 +6,15 @@ const genreSchema = new Schema({
     type: String,
     minlength: 2,
     maxlength: 50,
-    required: true
+    required: true,
+    unique: true
   }
 })
 
 const Genre = model('Genre', genreSchema)
 
 function validate(name) {
-  const schema = JoiExtended.object({
+  const schema = Joi.object({
     name: Joi.string().min(2).max(50).required()
   })
 

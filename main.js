@@ -14,7 +14,7 @@ const {
   login,
   auth
 } = require('./src/controller')
-const isObjectIdMiddleware = require('./src/middlewares/isObjectId')
+const errorMiddleware = require('./src/middlewares/error')
 
 const app = express()
 
@@ -41,7 +41,7 @@ function connectDB() {
       console.log('Could not connect to MongoDB: ', err)
       // 长时间未连接 mongodb 连接可能释放，从而导致连接失败
       // 当发生 Promise Reject 时， 如果未进行处理，那么 Node 可能终止当前程序运行的 process
-      process.exit(1)
+      // process.exit(1)
     })
 }
 
@@ -84,6 +84,8 @@ function useMiddleware() {
   app.use('/api/auth', auth)
 
   // app.use('/api/test', test)
+
+  app.use(errorMiddleware)
 }
 
 function run() {
@@ -94,5 +96,4 @@ function run() {
 
 useMiddleware()
 connectDB()
-
 run()

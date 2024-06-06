@@ -1,8 +1,9 @@
 const { Router } = require('express')
-const { Genre } = require('../models/genre')
+const { Genre, validate } = require('../models/genre')
 const auth = require('./../middlewares/auth')
 const admin = require('../middlewares/admin')
 const isObjectIdMiddleware = require('../middlewares/isObjectId')
+const asyncMiddleware = require('../middlewares/asyncMiddleware')
 
 const router = Router()
 
@@ -18,9 +19,22 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', auth, (req, res) => {
-  res.send('create a genre')
-})
+router.post(
+  '/',
+  auth,
+  asyncMiddleware(async (req, res, next) => {
+    const { error } = validate(req.body.name, '123')
+    if (error) {
+      return res.status(400).send(error.message)
+    }
+
+    const genre = await Genre.create({
+      name: req.body.name
+    })
+
+    res.send(genre)
+  })
+)
 
 router.get('/:id', (req, res) => {
   res.send(`get a genre with ID ${req.params.id}`)

@@ -1,7 +1,7 @@
 const Joi = require('joi')
 const { Schema, model, default: mongoose } = require('mongoose')
 const { genreSchema } = require('./genre')
-const { isObjectId } = require('../lib/utils')
+const { isObjectId, JoiExtended } = require('../lib/utils')
 
 const movieSchema = new Schema({
   title: {
@@ -15,7 +15,7 @@ const movieSchema = new Schema({
     type: [genreSchema],
     required: true,
     validate: {
-      validator: (v) => v.length > 0 && isObjectId(v),
+      validator: (v) => v.length > 0 && v.every((i) => isObjectId(i)),
       message: 'Genres should not empty array'
     }
   },
@@ -37,7 +37,7 @@ const Movie = model('Movie', movieSchema)
 function validate(movie) {
   const schema = Joi.object({
     title: Joi.string().min(2).max(50).required(),
-    genresId: Joi.array().items(Joi.string()).required(),
+    genresId: Joi.array().items(JoiExtended.isObjectId()).required(),
     numberInStock: Joi.number().min(0).required(),
     dailyRateRental: Joi.number().min(0).required()
   })

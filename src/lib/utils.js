@@ -18,6 +18,10 @@ const JoiExtended = Joi.extend((joi) => {
   }
 })
 
+const runtimeErrorHandler = () => {
+  // process.on('ReferenceError')
+}
+
 module.exports = {
   isObjectId,
   JoiExtended

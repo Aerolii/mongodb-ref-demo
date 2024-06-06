@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const { required } = require('joi')
 const { Schema, model } = require('mongoose')
+const { JoiExtended } = require('../lib/utils')
 
 const rentalSchema = new Schema({
   customer: {
@@ -60,8 +61,8 @@ const Rental = model('Rental', rentalSchema)
 
 function validate({ customerId, movieId }) {
   const schema = Joi.object({
-    customerId: Joi.string().required(),
-    movieId: Joi.string().required()
+    customerId: JoiExtended.isObjectId(),
+    movieId: JoiExtended.isObjectId()
   })
 
   return schema.validate({ customerId, movieId })
