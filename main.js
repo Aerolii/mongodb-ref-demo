@@ -60,7 +60,7 @@ function useMiddleware() {
   app.use('/api/movies', movies)
   app.use('/api/genres', genres)
   app.use('/api/customers', authMiddleware, adminMiddleware, customers)
-  app.use('/api/rentals', authMiddleware, adminMiddleware, rentals)
+  app.use('/api/rentals', [authMiddleware, adminMiddleware], rentals)
   // 两种方式设置路由
   // // 注册
   // app.post('/api/users', (req, res) => {

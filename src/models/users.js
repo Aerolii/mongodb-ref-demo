@@ -105,7 +105,7 @@ function validateUser({ name, email, password }) {
   const schema = Joi.object({
     name: Joi.string().trim().min(2).max(50).required(),
     email: Joi.string().trim().email().required(),
-    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{6,18}$'))
+    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{6,18}$')).required()
   })
 
   return schema.validate({ name, email, password })
